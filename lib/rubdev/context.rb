@@ -25,6 +25,52 @@ module RubDev
       @pointer = RubDev::C.udev_new
     end
 
+    def ref
+      RubDev::C.udev_ref(@pointer)
+      self
+    end
+
+    def unref
+      RubDev::C.udev_unref(@pointer)
+      self
+    end
+
+    def log_fn= (fn)
+      return false unless fn.is_a?(Proc)
+      RubDev::C.udev_set_log_fn(@pointer, fn)
+    end
+
+    def log_priority
+      RubDev::C.udev_get_log_priority(@pointer)
+    end
+
+    def log_priority= (p)
+      return false unless p.is_a?(Integer)
+      RubDev::C.udev_set_log_priority(@pointer, p)
+    end
+
+    def sys_path
+      RubDev::C.udev_get_sys_path(@pointer)
+    end
+
+    def dev_path
+      RubDev::C.udev_get_dev_path(@pointer)
+    end
+
+    if RubDev::C.respond_to?(:udev_get_run_path)
+      def run_path
+        RubDev::C.udev_get_run_path(@pointer)
+      end
+    end
+
+    def userdata
+      RubDev::C.udev_get_userdata(@pointer)
+    end
+
+    def userdata= (data)
+      RubDev::C.udev_get_userdata(@pointer, data)
+    end
+
     def to_c
       @pointer
     end

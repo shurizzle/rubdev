@@ -18,5 +18,8 @@
 #++
 
 require 'rubdev/context'
-require 'rubdev/monitor'
+require 'rubdev/list'
 require 'rubdev/device'
+require 'rubdev/monitor'
+require 'rubdev/enumerate'
+require 'rubdev/queue'

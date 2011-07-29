@@ -19,6 +19,18 @@
 
 require 'ffi'
 
+module FFI
+  module Library
+    def attach_function! (*args, &block)
+      begin
+        attach_function(*args, &block)
+      rescue Exception => e
+        false
+      end
+    end
+  end
+end
+
 module RubDev
   module C
     extend FFI::Library
@@ -38,7 +50,7 @@ module RubDev
     attach_function :udev_set_log_priority, [:pointer, :int], :void
     attach_function :udev_get_sys_path, [:pointer], :string
     attach_function :udev_get_dev_path, [:pointer], :string
-    attach_function :udev_get_run_path, [:pointer], :string
+    attach_function!:udev_get_run_path, [:pointer], :string
     attach_function :udev_get_userdata, [:pointer], :pointer
     attach_function :udev_set_userdata, [:pointer, :pointer], :void
     # }}}
@@ -67,21 +79,19 @@ module RubDev
     attach_function :udev_device_get_sysname, [:pointer], :string
     attach_function :udev_device_get_sysnum, [:pointer], :string
     attach_function :udev_device_get_devnode, [:pointer], :string
-    attach_function :udev_device_get_is_initialized, [:pointer], :int
-
+    attach_function!:udev_device_get_is_initialized, [:pointer], :int
     attach_function :udev_device_get_devlinks_list_entry, [:pointer], :pointer
     attach_function :udev_device_get_properties_list_entry, [:pointer], :pointer
     attach_function :udev_device_get_tags_list_entry, [:pointer], :pointer
-
     attach_function :udev_device_get_property_value, [:pointer, :string], :string
     attach_function :udev_device_get_driver, [:pointer], :string
     attach_function :udev_device_get_devnum, [:pointer], :dev_t
     attach_function :udev_device_get_action, [:pointer], :string
     attach_function :udev_device_get_sysattr_value, [:pointer, :string], :string
-    attach_function :udev_device_get_sysattr_list_entry, [:pointer], :pointer
+    attach_function!:udev_device_get_sysattr_list_entry, [:pointer], :pointer
     attach_function :udev_device_get_seqnum, [:pointer], :long_long
-    attach_function :udev_device_get_usec_since_initialized, [:pointer], :long_long
-    attach_function :udev_device_has_tag, [:pointer, :string], :int
+    attach_function!:udev_device_get_usec_since_initialized, [:pointer], :long_long
+    attach_function!:udev_device_has_tag, [:pointer, :string], :int
     # }}}
 
     # monitor {{{
@@ -111,8 +121,8 @@ module RubDev
     attach_function :udev_enumerate_add_nomatch_sysattr, [:pointer, :string, :string], :int
     attach_function :udev_enumerate_add_match_property, [:pointer, :string, :string], :int
     attach_function :udev_enumerate_add_match_tag, [:pointer, :string], :int
-    attach_function :udev_enumerate_add_match_parent, [:pointer, :pointer], :int
-    attach_function :udev_enumerate_add_match_is_initialized, [:pointer], :int
+    attach_function!:udev_enumerate_add_match_parent, [:pointer, :pointer], :int
+    attach_function!:udev_enumerate_add_match_is_initialized, [:pointer], :int
     attach_function :udev_enumerate_add_match_sysname, [:pointer, :string], :int
     attach_function :udev_enumerate_add_syspath, [:pointer, :string], :int
     attach_function :udev_enumerate_scan_devices, [:pointer], :int

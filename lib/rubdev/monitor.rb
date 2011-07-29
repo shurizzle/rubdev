@@ -23,6 +23,22 @@ require 'rubdev/device'
 
 module RubDev
   class Monitor
+    def ref
+      RubDev::C.udev_monitor_ref(@pointer)
+      self
+    end
+
+    def unref
+      RubDev::C.udev_monitor_unref(@pointer)
+      self
+    end
+
+    def context
+      Context.allocate.tap {|i|
+        i.instance_variable_set(:@pointer, RubDev::C.udev_monitor_get_udev(@pointer))
+      }
+    end
+
     class << self
       private :new
 
@@ -43,8 +59,13 @@ module RubDev
       RubDev::C.udev_monitor_enable_receiving(@pointer)
     end
 
-    def filter_add_match_subsystem_devtype (subsystem, devtype=nil)
-      RubDev::C.udev_monitor_filter_add_match_subsystem_devtype(@pointer, subsystem, devtype)
+    def buffer_size= (size)
+      return false unless size.is_a?(Integer)
+      RubDev::C.udev_monitor_set_receive_buffer_size(@pointer, size)
+    end
+
+    def fd
+      RubDev::C.udev_monitor_get_fd(@pointer)
     end
 
     def receive_device
@@ -53,24 +74,24 @@ module RubDev
       }
     end
 
-    def context
-      Context.allocate.tap {|i|
-        i.instance_variable_set(:@pointer, RubDev::C.udev_monitor_get_udev(@pointer))
-      }
+    def filter_add_match_subsystem_devtype (subsystem, devtype=nil)
+      RubDev::C.udev_monitor_filter_add_match_subsystem_devtype(@pointer, subsystem, devtype)
     end
 
-    def ref
-      RubDev::C.udev_monitor_ref(@pointer)
-      self
+    def filter_add_match_tag (tag)
+      RubDev::C.udev_monitor_filter_add_match_tag(@pointer, tag)
     end
 
-    def unref
-      RubDev::C.udev_monitor_unref(@pointer)
-      self
+    def filter_update
+      RubDev::C.udev_monitor_filter_update(@pointer)
+    end
+
+    def filter_remove
+      RubDev::C.udev_monitor_filter_remove(@pointer)
     end
 
     def to_io
-      IO.for_fd(RubDev::C.udev_monitor_get_fd(@pointer))
+      IO.for_fd(fd)
     end
   end
 end

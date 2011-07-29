@@ -1,6 +1,6 @@
 Gem::Specification.new {|g|
     g.name          = 'rubdev'
-    g.version       = '0.0.1a'
+    g.version       = '0.0.1'
     g.author        = 'shura'
     g.email         = 'shura1991@gmail.com'
     g.homepage      = 'http://github.com/shurizzle/rubdev'
